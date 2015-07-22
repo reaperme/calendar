@@ -1,5 +1,5 @@
 /**
- * Created by sc09395 on 2015/7/13 0013.
+ * Created by Reeoo on 2015/7/13 0013.
  */
 var myCalendar = angular.module("myCalendar", []);
 myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compile, $timeout, $q) {
