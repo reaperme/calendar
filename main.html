@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no" />
+    <title ng-bind="title"></title>
+    <link rel="stylesheet" href="style/calendar.css?v=_VERSION_"/>
+</head>
+<body>
+    <ui-view></ui-view>
+</body>
+<!-- build:js js/libs/libs.min.js?v=_VERSION_ -->
+<script src="js/libs/angular.min.js?v=_VERSION_"></script>
+<script src="js/libs/angular-ui-route.min.js?v=_VERSION_"></script>
+<!-- /build -->
+<script src="js/config/config.js?v=_VERSION_"></script>
+<script src="js/app.js?v=_VERSION_"></script>
+<script src="js/controllers/indexCtrl.js"></script>
+<script src="js/directive/calendar.js"></script>
+</html>

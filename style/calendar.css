@@ -1,0 +1,201 @@
+/*.calendar {*/
+/*padding: 0 10px 20px;*/
+/*font-family: helvetica, arial, sans-serif;*/
+/*background: #fff;*/
+/*}*/
+/*.calendar-wrapper {*/
+/*margin-top: 10px;*/
+/*}*/
+/*.calendar-wrapper table {*/
+/*width: 100%;*/
+/*border-collapse: collapse;*/
+/*}*/
+/*.calendar-wrapper h3 {*/
+/*text-align: center;*/
+/*font-size: 16px;*/
+/*font-weight: normal;*/
+/*line-height: 30px;*/
+/*}*/
+/*.calendar-wrapper tr {*/
+/*height: 48px;*/
+/*}*/
+/*.calendar-wrapper tr:first-child {*/
+/*height: 40px;*/
+/*background-image: -webkit-linear-gradient(bottom,transparent 50%,#dcdcdc 50%);*/
+/*background-image: linear-gradient(to bottom,transparent 50%,#dcdcdc 50%);*/
+/*background-size:100% 1px;*/
+/*background-repeat: no-repeat;*/
+/*background-position: bottom;*/
+/*}*/
+/*.calendar-wrapper th {*/
+/*width: 14.2857143%;*/
+/*color: #999;*/
+/*font-weight: normal;*/
+/*}*/
+/*.calendar-wrapper td {*/
+/*text-align: center;*/
+/*vertical-align: middle;*/
+/*font-size: 14px;*/
+/*padding: 0 2px;*/
+/*}*/
+/*.calendar-wrapper tr:nth-child(2) td {*/
+/*padding-top: 2px;*/
+/*}*/
+/*.calendar-wrapper td > div {*/
+/*height: 40px;*/
+/*line-height: 40px;*/
+/*}*/
+/*.calendar-wrapper td span {*/
+/*display: block;*/
+/*padding-top: 6px;*/
+/*line-height: 14px;*/
+/*font-family: Arial;*/
+/*}*/
+/*.calendar-wrapper td p {*/
+/*font-size: 12px;*/
+/*line-height: 0;*/
+/*color: #50b400;*/
+/*font-family: Arial;*/
+/*}*/
+/*.calendar .sunday p, .calendar .saturday p {*/
+/*color: #50b400;*/
+/*}*/
+/*.calendar .sunday, .calendar .saturday {*/
+/*color: #50b400;*/
+/*}*/
+/*.calendar .today > div {*/
+/*background: #f0f0f0;*/
+/*color: #333;/!*ff8400*!/*/
+/*border-radius: 5px;*/
+/*}*/
+/*.calendar .disabled {*/
+/*color: #ccc;*/
+/*}*/
+/*.calendar-wrapper .from-day > div, .calendar-wrapper .to-day > div {*/
+/*background: #50b400;*/
+/*color: #fff;*/
+/*border-radius: 5px;*/
+/*}*/
+/*.calendar-wrapper .from-day p, .calendar-wrapper .to-day p {*/
+/*color: #fff;*/
+/*}*/
+
+/*.calendar-tips {*/
+/*background: rgba(0, 0, 0, 0.8);*/
+/*color: #fff;*/
+/*width: 180px;*/
+/*padding: 10px;*/
+/*border-radius: 5px;*/
+/*text-align: center;*/
+/*/!*-webkit-transition: all 0.3s ease-in-out;*/
+/*transition: all 0.3s ease-in-out;*!/*/
+/*}*/
+/*.calendar-tips.fixed {*/
+/*left: 50%;*/
+/*margin-left: 50%;*/
+/*bottom: 20px;*/
+/*}*/
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+
+.calendar-box{}
+.calendar-name{
+    line-height: 44px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 400;
+    background: #f7f7f7;
+    position: relative;
+    border-bottom: 1px solid #eee;
+}
+.calendar {
+    text-align: center;
+    padding: 0 10px 20px
+}
+
+.calendar .calendar-title {
+    font-weight: normal;
+    font-family: helvetica, arial, sans-serif;
+    height: 30px;
+    line-height: 30px;
+    color: #333;
+    font-size: 16px;
+    padding: 5px 0;
+}
+
+.calendar table {
+    width: 100%;
+    border-collapse: collapse;
+
+}
+
+.calendar .calendar-content {
+
+}
+
+.calendar .calendar-content.active {
+    background: #50b400;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.calendar .calendar-content.active .calendar-extend-data {
+    font-family: Arial;
+
+    color: #fff;
+}
+
+.calendar .suntosat {
+    height: 40px;
+    line-height: 40px;
+    background-image: -webkit-linear-gradient(bottom, transparent 50%, #dcdcdc 50%);
+    background-image: linear-gradient(to bottom, transparent 50%, #dcdcdc 50%);
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+.calendar .suntosat .sun-sat {
+    color: #50b400;
+    width: 14.2857143%;
+}
+
+.calendar .suntosat th {
+    font-weight: normal;
+    color: #999;
+}
+
+.calendar td {
+    font-size: 14px;
+    padding: 8px 2px;
+}
+
+.calendar .calendar-day {
+    font-family: Arial;
+}
+
+.calendar .calendar-extend-data {
+    font-family: Arial;
+    font-size: 12px;
+    line-height: 16px;
+    color: #50b400;
+    margin-top: 5px;
+}
+
+.calendar .hide-day {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
