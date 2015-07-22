@@ -101,9 +101,10 @@
     margin: 0;
 }
 
+.calendar-box {
+}
 
-.calendar-box{}
-.calendar-name{
+.calendar-name {
     line-height: 44px;
     font-size: 18px;
     text-align: center;
@@ -112,6 +113,7 @@
     position: relative;
     border-bottom: 1px solid #eee;
 }
+
 .calendar {
     text-align: center;
     padding: 0 10px 20px
@@ -137,18 +139,6 @@
 
 }
 
-.calendar .calendar-content.active {
-    background: #50b400;
-    color: #fff;
-    border-radius: 5px;
-}
-
-.calendar .calendar-content.active .calendar-extend-data {
-    font-family: Arial;
-
-    color: #fff;
-}
-
 .calendar .suntosat {
     height: 40px;
     line-height: 40px;
@@ -172,6 +162,17 @@
 .calendar td {
     font-size: 14px;
     padding: 8px 2px;
+}
+
+.calendar td.active .calendar-content {
+    background: #50b400;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.calendar td.active .calendar-extend-data {
+    font-family: Arial;
+    color: #fff;
 }
 
 .calendar .calendar-day {

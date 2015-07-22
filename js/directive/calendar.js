@@ -29,29 +29,6 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
      * endDate:{string} "20150820"
      *
      * */
-    function calendar(settings) {
-        this.scope = settings.scope;
-        this.dateRange = settings.dateRange;
-        this.name = settings.name;
-        this.pickerFn = settings.pickerFn;
-        this.needClear = settings.needClear || false;
-        this.template =
-            '<div class="calendar">' +
-            '<h3 class="calendar-title" ng-bind="calendarTitle"></h3>' +
-            '<table>' +
-            '<tr class="suntosat"><th class="sun-sat">日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th class="sun-sat">六</th></tr>' +
-            '<tr ng-repeat="data in pdata track by $index">' +       //ng-class="{true: \'sun-sat\', false: \'\'}[$index == 0 || $index == 6]"
-            '<td ng-click="pickerFn(item.fullYMD,item.price)" ng-repeat="item in data track by $index">' +
-            '<div class="calendar-content" ng-class="{true:\'hide-day\',false:\'\'}[item.type == \'prev\' || item.type == \'next\']">' +
-            '<p class="calendar-day" ng-bind="item.day"></p>' +
-            '<div class="calendar-extend-data" ng-bind="item.price"></div>' +
-            '</div>' +
-            '</td>' +
-            '</tr>' +
-            '</table>' +
-            '</div>'
-        this.init();
-    }
 
     Date.prototype.format = function (format) {
         var o = {
@@ -74,6 +51,33 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
         return format;
     }
 
+
+    function calendar(settings) {
+        this.scope = settings.scope;
+        this.cbFn = settings.cbFn || angular.noop;
+        this.dateRange = settings.dateRange;
+        this.name = settings.name;
+        this.pickerFn = settings.pickerFn;
+        this.needClear = settings.needClear || false;
+        this.template =
+            '<div class="calendar">' +
+            '<h3 class="calendar-title" ng-bind="calendarTitle"></h3>' +
+            '<table>' +
+            '<tr class="suntosat"><th class="sun-sat">日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th class="sun-sat">六</th></tr>' +
+            '<tr ng-repeat="data in pdata track by $index">' +       //ng-class="{true: \'sun-sat\', false: \'\'}[$index == 0 || $index == 6]"
+            '<td ng-class="{true:\'active\',false:\'\'}[item.active]" ng-click="click(item.fullYMD,item.price,item)" ng-repeat="item in data track by $index">' +
+            '<div ng-class="{true:\'calendar-content hide-day\',false:\'calendar-content\'}[item.type == \'prev\' || item.type == \'next\']">' +
+            '<p class="calendar-day" ng-bind="item.day"></p>' +
+            '<div class="calendar-extend-data" ng-bind="item.price"></div>' +
+            '</div>' +
+            '</td>' +
+            '</tr>' +
+            '</table>' +
+            '</div>'
+        this.init();
+    }
+
+
     calendar.prototype = {
         constructor: calendar,
 
@@ -86,8 +90,7 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
         },
         setDateList: function (result, startYear, startMonth) {
             var arr = [], tArr = [], html, j = 0, self = this;
-            //var scope = self.scope.$new(true);//创建独立作用域，尼玛，再也不会都一样了。
-            var scope = self.scope;
+            var scope = self.scope.$new(true);//创建独立作用域，尼玛，再也不会都一样了。
             for (var i = 0; i < result.length; i++) {//分组，每7个一组
                 result[i].price = "¥" + result[i].day + "0";
                 tArr.push(result[i]);
@@ -99,27 +102,43 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
                 else {
                     ++j;
                 }
-
             }
 
             scope.pdata = arr;//长得像这样子：[[{},{},{},{},{},{},{}],[{},{},{},{},{},{},{}],[{},{},{},{},{},{},{}]......]
             scope.calendarTitle = startYear + "年" + startMonth + "月";
             scope.calendarName = self.name;
             scope.returnYM = startYear + "-" + (startMonth > 9 ? startMonth : "0" + startMonth);
-            scope.abc = self.pickerFn;
+            scope.click = function (fullYMD, price, item) {
+                var isActive = item.active;
+                angular.forEach(result, function (i, e) {
+                    i.active = false;
+                })
+                if(isActive){
+                    item.active = false;
+                }
+                else{
+                    item.active = true;
+                }
+
+                scope.$emit(self.cbFn, {
+                    fullYMD: fullYMD,
+                    price: price
+                })
+            }
+
             html = $compile(self.template)(scope);
             angular.element(document.querySelector('.calendar-box')).append(html);
         },
         getTimeList: function () {
             var self = this;
-            this.startDate = this.dateRange.split(',')[0] || (new Date()).format('yyyy-MM-dd');
+            var startDate = this.dateRange.split(',')[0] || (new Date()).format('yyyy-MM-dd');
 
-            this.endDate = this.dateRange.split(',')[1] || new Date().format('yyyy-MM-dd');
+            var endDate = this.dateRange.split(',')[1] || new Date().format('yyyy-MM-dd');
 
-            var startYear = +this.startDate.split('-')[0],
-                startMonth = +this.startDate.split('-')[1],
-                endYear = +this.endDate.split('-')[0],
-                endMonth = +this.endDate.split('-')[1];
+            var startYear = +startDate.split('-')[0],
+                startMonth = +startDate.split('-')[1],
+                endYear = +endDate.split('-')[0],
+                endMonth = +endDate.split('-')[1];
 
 
             var result;
@@ -173,7 +192,7 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
 
             for (var i = lastMonthMaxDay - firstDay + 1; i <= lastMonthMaxDay; i++) {//补足上月
                 var Y = m - 1 == 0 ? y - 1 : y;
-                var M = m - 1 > 9 ? m - 1 : m - 1 == 0 ? m = 12 : "0" + (m - 1);
+                var M = m - 1 > 9 ? m - 1 : m - 1 == 0 ? 12 : "0" + (m - 1);
                 arr.push({
                     type: "prev",
                     day: i,
@@ -245,40 +264,27 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
         compile: function () {
             return {
                 pre: function (scope, elem, attrs) {
-
+                    var dateRange = attrs.dateRange || 0,
+                        name = attrs.name || "",
+                        cbFn = attrs.cbFn,
+                        cal = new calendar({
+                            dateRange: dateRange,
+                            scope: scope,
+                            name: name,
+                            cbFn: cbFn
+                        });
                     scope.$watch('dateRange', function (newValue, oldValue) {
-                        var needClear = false;
                         if (newValue !== oldValue) {//数据发生改变
-                            needClear = true;
+                            cal.needClear = true;
+                            cal.dateRange = newValue;
+                            cal.init()
                         }
-                        $timeout(function () {
-                            var dateRange = attrs.dateRange || 0,
-                                name = attrs.name || "",
-                                pickerFn = attrs.pickerFn || angular.noop;
-                            new calendar({
-                                dateRange: newValue,
-                                scope: scope,
-                                name: name,
-                                needClear: needClear
-                            });
-                        })
                     })
 
-
                     scope.$watch('name', function (newValue, oldValue) {
-                        var needClear = false;
-
-                        $timeout(function () {
-                            var dateRange = attrs.dateRange || 0,
-                                name = attrs.name || "",
-                                pickerFn = attrs.pickerFn || angular.noop;
-                            new calendar({
-                                dateRange: newValue,
-                                scope: scope,
-                                name: name,
-                                needClear: needClear
-                            });
-                        })
+                        if (newValue !== oldValue) {//数据发生改变
+                            cal.name = newValue;
+                        }
                     })
                 },
                 post: function (scope, elem, attrs) {
