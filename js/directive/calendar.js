@@ -73,14 +73,14 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
             '</td>' +
             '</tr>' +
             '</table>' +
-            '</div>'
+            '</div>';
+        this.opened = settings.opened || false;
         this.init();
     }
 
 
     calendar.prototype = {
         constructor: calendar,
-
         init: function () {
             if (this.needClear) {
                 console.log(angular.element(document.querySelector('.calendar-box')))
@@ -100,7 +100,7 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
                     j = 0;
                 }
                 else {
-                    ++j;
+                    j++;
                 }
             }
 
@@ -108,15 +108,17 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
             scope.calendarTitle = startYear + "年" + startMonth + "月";
             scope.calendarName = self.name;
             scope.returnYM = startYear + "-" + (startMonth > 9 ? startMonth : "0" + startMonth);
+
+
             scope.click = function (fullYMD, price, item) {
                 var isActive = item.active;
                 angular.forEach(result, function (i, e) {
                     i.active = false;
                 })
-                if(isActive){
+                if (isActive) {
                     item.active = false;
                 }
-                else{
+                else {
                     item.active = true;
                 }
 
@@ -128,6 +130,7 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
 
             html = $compile(self.template)(scope);
             angular.element(document.querySelector('.calendar-box')).append(html);
+
         },
         getTimeList: function () {
             var self = this;
@@ -171,6 +174,7 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
 
         },
         buildCalendar41Month: function (y, m) {
+
             var arr = [];
             var maxDay = this.getMaxDayInMonth(y, m),//这个月的天数
                 firstDay = this.getWeekday(y, m);//这个月的第一天是周几
@@ -189,10 +193,10 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
                 nextMonthFirstDay = this.getWeekday(y, m + 1);//上一个月多少天
             }
 
-
             for (var i = lastMonthMaxDay - firstDay + 1; i <= lastMonthMaxDay; i++) {//补足上月
                 var Y = m - 1 == 0 ? y - 1 : y;
                 var M = m - 1 > 9 ? m - 1 : m - 1 == 0 ? 12 : "0" + (m - 1);
+
                 arr.push({
                     type: "prev",
                     day: i,
@@ -220,7 +224,6 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
                     })
                 }
             }
-
             return arr;
 
         },
@@ -236,56 +239,74 @@ myCalendar.directive("calendar", ['$compile', '$timeout', '$q', function ($compi
         getMaxDayInMonth: function (y, m) {//获取一个月的最大天数
             var date;
             if (y && m) {
-                date = new Date(y + "/" + m);
+                date = new Date(y, m);//注意兼容！！！Date('2015/7')iOS不兼容
             }
             else {
                 date = new Date();
             }
-
             var month = date.getMonth();
-
             date.setMonth(month + 1);
 
             date.setDate(0);
 
             return date.getDate();
-
         }
     }
 
     return {
-        restrict: 'AE',
+        restrict: 'A',
         scope: {
             name: "@calendarName",
             pickerFn: "&",
             dateRange: '@'
         },
-        template: '<section class="calendar-box"><h3 class="calendar-name" ng-if="name" ng-bind="name"></h3></section>',
         compile: function () {
             return {
                 pre: function (scope, elem, attrs) {
-                    var dateRange = attrs.dateRange || 0,
-                        name = attrs.name || "",
-                        cbFn = attrs.cbFn,
-                        cal = new calendar({
-                            dateRange: dateRange,
-                            scope: scope,
-                            name: name,
-                            cbFn: cbFn
+
+
+                    elem.on("click", function () {
+                        angular.element(document.querySelector('.calendar-box')).remove();
+                        var dateRange = attrs.dateRange || 0,
+                            name = attrs.calendarName || "",
+                            cbFn = attrs.cbFn,
+                            cal,
+                            tpl = '<section class="calendar-box">' +
+                                '<h3 class="calendar-name" ng-if="name" ng-bind="name"></h3>' +
+                                '</section>',
+                            html = $compile(tpl)(scope),
+                            needClear = false;
+                        angular.element(document.querySelector('body')).append(html);
+                        $timeout(function () {
+                            cal = new calendar({
+                                dateRange: dateRange,
+                                scope: scope,
+                                name: name,
+                                cbFn: cbFn,
+                                opened: true,
+                                needClear: needClear
+                            });
+                            angular.element(document.querySelector('.calendar-box')).addClass('movein').removeClass('moveout');
+                            angular.element(document.querySelector('.calendar-box')).on("click", function () {
+                                angular.element(this).removeClass('movein').addClass('moveout');
+                            })
                         });
-                    scope.$watch('dateRange', function (newValue, oldValue) {
-                        if (newValue !== oldValue) {//数据发生改变
-                            cal.needClear = true;
-                            cal.dateRange = newValue;
-                            cal.init()
-                        }
                     })
 
-                    scope.$watch('name', function (newValue, oldValue) {
-                        if (newValue !== oldValue) {//数据发生改变
-                            cal.name = newValue;
-                        }
-                    })
+
+                    //scope.$watch('dateRange', function (newValue, oldValue) {
+                    //    if (newValue !== oldValue) {//数据发生改变
+                    //        cal.needClear = true;
+                    //        cal.dateRange = newValue;
+                    //        cal.init()
+                    //    }
+                    //})
+
+                    //scope.$watch('name', function (newValue, oldValue) {
+                    //    if (newValue !== oldValue) {//数据发生改变
+                    //        cal.name = newValue;
+                    //    }
+                    //})
                 },
                 post: function (scope, elem, attrs) {
 
